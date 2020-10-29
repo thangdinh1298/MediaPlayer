@@ -1,3 +1,5 @@
+package frames;
+
 import entites.LivestreamInfo;
 import net.HttpHandler;
 
@@ -6,28 +8,36 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-public class M {
+public class MainWindow {
     private JTabbedPane tabbedPane1;
     private JPanel mainPanel;
     private JTable streamTable;
     private JButton getStreamsButton;
 
-    public M() {
+    public MainWindow() {
 
         getStreamsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-//                ArrayList<LivestreamInfo> lives = HttpHandler.GetRooms();
-//
-//                LiveStreamsTableModel model = new LiveStreamsTableModel();
-//                for (LivestreamInfo l: lives) {
-//                    model.addRow(l.getRoomName(), l.getViewerCount());
-//                }
-//
-//                streamTable.setModel(model);
-                tabbedPane1.setSelectedIndex(1);
+                ArrayList<LivestreamInfo> lives = HttpHandler.GetRooms();
+
+                LiveStreamsTableModel model = new LiveStreamsTableModel();
+                for (LivestreamInfo l: lives) {
+                    model.addRow(l.getRoomName(), l.getViewerCount());
+                }
+
+                streamTable.setModel(model);
+                streamTable.addMouseListener(new MouseAdapter() {
+                    @Override
+                    public void mousePressed(MouseEvent e) {
+                        String streamName = (String)streamTable.getValueAt(streamTable.rowAtPoint(e.getPoint()), 0 );
+                        new PlayWindow(streamName);
+                    }
+                });
             }
         });
 
